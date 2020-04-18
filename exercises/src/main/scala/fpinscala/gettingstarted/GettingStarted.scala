@@ -1,5 +1,7 @@
 package fpinscala.gettingstarted
 
+import scala.annotation.tailrec
+
 // A comment!
 /* Another comment */
 /** A documentation comment */
@@ -36,7 +38,18 @@ object MyModule {
 
   // Exercise 1: Write a function to compute the nth fibonacci number
 
-  def fib(n: Int): Int = ???
+  def fib(n: Int): Int = {
+    val p = 0
+    val c = 1
+    if(n == 0) return 0
+    if(n == 1) return 1
+    @tailrec
+    def go(n: Int, curr: Int, prev: Int): Int = {
+      if(n < 1) curr
+      else go(n - 1, prev + curr, curr)
+    }
+    go(n - 1, c, p)
+  }
 
   // This definition and `formatAbs` are very similar..
   private def formatFactorial(n: Int) = {
@@ -120,6 +133,16 @@ object MonomorphicBinarySearch {
 
 object PolymorphicFunctions {
 
+  def findFirst[A](arr: Array[A], comparison: A => Boolean): Int = {
+    @tailrec
+    def loop(n: Int): Int = {
+      if (n >= arr.length) -1
+      else if (comparison(arr(n))) n
+      else loop(n + 1)
+    }
+    loop(0)
+  }
+
   // Here's a polymorphic version of `binarySearch`, parameterized on
   // a function for testing whether an `A` is greater than another `A`.
   def binarySearch[A](as: Array[A], key: A, gt: (A,A) => Boolean): Int = {
@@ -140,7 +163,16 @@ object PolymorphicFunctions {
 
   // Exercise 2: Implement a polymorphic function to check whether
   // an `Array[A]` is sorted
-  def isSorted[A](as: Array[A], gt: (A,A) => Boolean): Boolean = ???
+  def isSorted[A](as: Array[A], gt: (A,A) => Boolean): Boolean = {
+    @tailrec
+    def go(prev: Int): Boolean = {
+      val next = prev + 1
+      if(next == as.length - 1) gt(as(prev), as(next))
+      else gt(as(prev), as(next)) && go(prev + 1)
+    }
+    go(0)
+  }
+
 
   // Polymorphic functions are often so constrained by their type
   // that they only have one implementation! Here's an example:
