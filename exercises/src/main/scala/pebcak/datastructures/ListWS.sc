@@ -1,44 +1,26 @@
-import scala.annotation.tailrec
+import pebcak.datastructures._
+import pebcak.datastructures.List._
 
-sealed trait List[+A]
-case object Nil extends List[Nothing]
-case class Cons[+A](head: A, tail: List[A]) extends List[A]
+foldRight(List(1,2,3), Nil: List[Int])(Cons(_, _))
 
-object List {
-  def sum(ints: List[Int]): Int = ints match {
-    case Nil => 0
-    case Cons(h, t) => h + sum(t)
-  }
+length(List(1,2,3,4,5,6,1,2,3))
 
-  def product(ds: List[Double]): Double = ds match {
-    case Nil => 1.0
-    case Cons(h, t) => h * product(t)
-  }
+foldLeft(List(1,2,3,4,5), 1.0)(_ * _)
 
-  def apply[A](as: A*): List[A] =
-    if (as.isEmpty) Nil
-    else Cons(as.head, apply(as.tail: _*))
+reverse(List(1,2,3,4,5))
 
-  def tail[A](xs: List[A]): List[A] = xs match {
-    case Cons(_, ys) => ys
-    case Nil => Nil
-  }
+addOne(List(1,2,3,4,5))
 
-  def setHead[A](xs: List[A], x: A): List[A] = xs match {
-      case Cons(_, ys) => Cons(x, ys)
-      case Nil => Cons(x, Nil)
-    }
+dblToStr(List(1.0, 2.0, 3.3))
 
-  @tailrec
-  def drop[A](xs: List[A], n: Int): List[A] = {
-    if(n == 0) xs
-    else xs match {
-      case Nil => Nil
-      case Cons(_, ys) => drop(ys, n - 1)
-    }
-  }
-}
+mapFold(List(1,2,3,4))(_ * 2)
 
+fmFilter(List(1,2,3,4,5))(_ % 2 == 1)
 
-val l = Cons(4, Cons(5, Cons(6, Cons(1, Nil))))
+flatMap(List(1,2,3,4,5))(a => List(a, a))
 
+addItems(List(1,2,3,4,5,90), List(4,5,6,7))
+
+take(List(1,2,3,4,5), 3)
+
+hasSubsequence(List(1,2,3,4,5,6,7,8,9,10), List(7,8,9,10))
