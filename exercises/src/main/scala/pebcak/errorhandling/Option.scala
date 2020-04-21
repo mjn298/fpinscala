@@ -18,10 +18,32 @@ sealed trait Option[+A] {
     case Some(a) if f(a) => Some(a)
   }
 
+  def isEmpty[A](a: Option[A]): Boolean = a match {
+    case Some(_) => false
+    case _ => true
+  }
+
   def filter_1(f: A => Boolean): Option[A] =
     flatMap(a => if(f(a)) Some(a) else None)
+
+  def lift[A, B](f: A => B): Option[A] => Option[B] = _ map f
 }
 case class Some[+A](get: A) extends Option[A]
 case object None extends Option[Nothing]
 
 
+object Option {
+  def Try[A](a: => A): Option[A] = {
+    try Some(a)
+    catch {
+      case a: Exception => None
+    }
+  }
+  def map2[A, B, C](a: Option[A], b: Option[B])(f: (A, B) => C): Option[C] =
+    a flatMap(aa => b map(bb => f(aa, bb)))
+
+  def sequence[A](a: List[Option[A]]): Option[List[A]] = a match {
+    case Nil => Some(Nil)
+    case h :: t => h flatMap(hh => sequence(t) map (hh :: _))
+  }
+}
