@@ -14,10 +14,17 @@ shell, which you can fill in and modify while working through the chapter.
 */
 
 trait Prop {
+  def check: Boolean
+  def &&(p: Prop): Prop = new Prop {
+    def check: Boolean = Prop.this.check && p.check
+  }
 }
 
 object Prop {
   def forAll[A](gen: Gen[A])(f: A => Boolean): Prop = ???
+  def listOf[A](gen: Gen[A]): Gen[List[A]] = ???
+  type FailedCase = String
+  type SuccessCount = Int
 }
 
 object Gen {
